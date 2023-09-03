@@ -35,7 +35,9 @@ class Template(BasePage):
             index = self.templates.index(getSessionState(TemplateKey))
 
         with st.sidebar:
-            st.button('go home', on_click=self.goHome)
+            c0, c1 = st.columns(2)
+            c0.button('go home', on_click=self.goHome)
+            c1.button('generate', on_click=self.generate)
 
             st.title(colorText('orange', 'Template list'))
 
@@ -63,12 +65,10 @@ class Template(BasePage):
 
         c.title(path)
 
-        cols = c.columns(len(self.cmds) + 1)
-
-        cols[0].button('generate', on_click=self.generate)
+        cols = c.columns(len(self.cmds))
 
         for n, (name, f) in enumerate(self.cmds):
-            if cols[n + 1].button(name):
+            if cols[n].button(name):
                 f()
 
     @log

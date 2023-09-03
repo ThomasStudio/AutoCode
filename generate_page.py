@@ -13,11 +13,10 @@ class Generate(BasePage):
         self.template = currentTemplate()
 
     def initUi(self):
-        self.showBackButtion()
-        st.title(self.template)
+        with st.sidebar:
+            st.button('template', on_click=self.toShowTemplate)
 
-    def showBackButtion(self):
-        st.button('go back', on_click=self.toShowTemplate, type='primary')
+        st.title(self.template)
 
     def toShowTemplate(self):
         setSessionState(PageType, ShowTemplate)
