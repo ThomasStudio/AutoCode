@@ -1,3 +1,5 @@
+from functools import wraps
+
 import streamlit as st
 from typing import *
 import urllib.parse
@@ -29,7 +31,6 @@ def getSessionState(k: str) -> Any:
 
 
 def setSessionState(k: str, v: Any):
-    print(f'setSessionState({k}, {v})')
     st.session_state[k] = v
 
 
@@ -72,3 +73,5 @@ def getUrl():
 
 if __name__ == '__main__':
     pass
+
+    print(orangeText('hello'))

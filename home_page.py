@@ -7,9 +7,6 @@ import streamlit as st
 class HomePage(BasePage):
 
     def initData(self):
-        if hasSessionState(TemplateKey):
-            print('initData', getSessionState(TemplateKey))
-
         pass
 
     def initUi(self):
@@ -17,7 +14,7 @@ class HomePage(BasePage):
         self.reference()
 
         with st.sidebar:
-            st.button('Template', on_click=self.showTemplate)
+            st.button('Template', on_click=toShowTemplate)
 
     def reference(self):
         st.write(
@@ -39,6 +36,3 @@ class HomePage(BasePage):
         
         ## Add/Edit/Remove code template
         ''')
-
-    def showTemplate(self):
-        setSessionState(PageType, ShowTemplate)

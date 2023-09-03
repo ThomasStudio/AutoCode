@@ -3,7 +3,10 @@ from enum import Enum
 from typing import *
 import os
 from Cheetah.Template import Template
+
+from ss import ss
 from util_web import *
+from importlib import import_module, reload
 
 TemplateFolder = 'template'
 
@@ -18,8 +21,29 @@ ShowHomePage = 'ShowHomePage'
 PageType = ShowTemplate
 
 
-def currentTemplate() -> str:
+def currentSourceFile() -> str:
     return getSessionState(TemplateKey)
+
+
+def editCurrentTemplate():
+    cmd = f'code {TemplateFolder}{os.sep}{currentSourceFile()}'
+    print(cmd)
+    os.popen(cmd)
+
+
+def currentSource() -> str:
+    return openTemplate(currentSourceFile())
+
+
+def currentTemplate() -> Any:
+    path = currentSourceFile()
+
+    model = path.replace('.py', '')
+
+    t = import_module(model)
+    reload(t)
+
+    return t
 
 
 def openTemplate(fName: str) -> str:
@@ -38,23 +62,34 @@ class TemplateType(Enum):
 
 
 class CodeTemplate:
-    def __init__(self, templateType=TemplateType.CREATE, content='', path='', args: Dict = None):
+    def __init__(self, templateType=TemplateType.CREATE, content='', path='', args: Dict = None,
+                 handlePath: Callable[[str], str] = None, handleCode: Callable[[str], str] = None):
         self.type = templateType
         self.content = content
         self.path = path
         self.args = args
 
-    def getCode(self) -> str:
-        return str(Template(source=self.content, namespaces=self.args))
+        self.handlePath = handlePath
+        self.handleCode = handleCode
+
+    def getCodePreview(self) -> str:
+        rs = str(Template(source=self.content, namespaces=self.args))
+
+        return rs if (self.handleCode is None) else self.handlePath(rs)
+
+    def getPathPreview(self):
+        rs = ss(Template(source=self.path, namespaces=self.args)).toPath()
+
+        return rs if (self.handlePath is None) else self.handlePath(rs)
 
 
-def getTemplate(templateType=TemplateType.CREATE, content='', path='', args: Dict = None) -> CodeTemplate:
-    return CodeTemplate(templateType, content, path, args)
+def toShowTemplate():
+    setSessionState(PageType, ShowTemplate)
 
 
-def getCreateTemplate(content='', path='', args: Dict = None) -> CodeTemplate:
-    return getTemplate(TemplateType.CREATE, content, path, args)
+def toHomePage():
+    setSessionState(PageType, ShowHomePage)
 
 
-def getModifyTemplate(content='', path='', args: Dict = None) -> CodeTemplate:
-    return getTemplate(TemplateType.Modify, content, path, args)
+def toGenerateCode():
+    setSessionState(PageType, GenerateCode)

@@ -1,24 +1,47 @@
+from __future__ import annotations
+
 from util_template import *
-from Cheetah.Template import Template
+
+
+def handlePath(path: str) -> str:
+    return path.lower()
+
 
 templates = [
-    getCreateTemplate(
-        path='',
+    CodeTemplate(
         args=dict(
-            title='hello world'
+            rootPath=None,
+            pageName=None,
         ),
+        path=f'$rootPath/$[pageName]_page.py',
         content='''
-print('$title')
-'''
+from base_page import BasePage
+
+from util_template import *
+from util_web import *
+
+
+class $[pageName](BasePage):
+    def __init__(self):
+        super().__init__()
+
+    def initData(self):
+        pass
+
+    def initUi(self):
+        pass
+''',
+        handlePath=handlePath
     ),
 
-    getTemplate(
-        path='',
+    CodeTemplate(
         args=dict(
             title='this is a example'
         ),
+        path='',
         content='''
-The title is $title
+The title is 
+    $title
 '''
     )
 ]

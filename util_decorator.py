@@ -27,3 +27,14 @@ def log(fun):
         return fun(*args, **kwargs)
 
     return new_fun
+
+
+def chain(fun):
+    """return self for the function"""
+
+    @wraps(fun)
+    def new_fun(*args, **kwargs):
+        fun(*args, **kwargs)
+        return args[0]
+
+    return new_fun
