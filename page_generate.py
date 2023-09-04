@@ -1,4 +1,4 @@
-from base_page import BasePage
+from page_base import BasePage
 
 from util_template import *
 from util_web import *

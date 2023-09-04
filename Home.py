@@ -1,10 +1,10 @@
 import init
 
-from home_page import HomePage
+from page_home import HomePage
 from util_template import *
 from util_web import *
-import template_page as tp
-from generate_page import Generate
+import page_template as tp
+from page_generate import Generate
 
 if __name__ == '__main__':
     if hasSessionState(PageType):

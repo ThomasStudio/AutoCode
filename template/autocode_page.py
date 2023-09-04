@@ -13,7 +13,7 @@ templates = [
             rootPath=None,
             pageName=None,
         ),
-        path=f'$rootPath/$[pageName]_page.py',
+        path=f'$rootPath/page_$[pageName].py',
         content='''
 from base_page import BasePage
 
