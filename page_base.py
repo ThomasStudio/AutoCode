@@ -4,7 +4,6 @@ from util_web import *
 
 class BasePage(ABC):
     def __init__(self) -> None:
-        initPage()
         self.showTitle()
 
         self.container = st.container()

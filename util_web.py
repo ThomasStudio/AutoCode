@@ -5,6 +5,7 @@ from typing import *
 import urllib.parse
 import tornado
 from tornado import httputil
+from util_decorator import *
 
 AppTitle = 'AtoCode'
 AppIcon = '🚀'
@@ -30,6 +31,7 @@ def getSessionState(k: str) -> Any:
         return st.session_state[k]
 
 
+@log
 def setSessionState(k: str, v: Any):
     st.session_state[k] = v
 

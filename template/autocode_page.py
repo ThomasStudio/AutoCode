@@ -7,14 +7,16 @@ def handlePath(path: str) -> str:
     return path.lower()
 
 
-templates = [
-    CodeTemplate(
-        args=dict(
-            rootPath=None,
-            pageName=None,
-        ),
-        path=f'$rootPath/page_$[pageName].py',
-        content='''
+args = dict(
+    rootPath=None,
+    pageName=None,
+    testName=None,
+)
+
+f1 = CodeFile(
+    path=f'$rootPath/page_$[pageName].py',
+    handlePath=handlePath,
+    content='''
 from base_page import BasePage
 
 from util_template import *
@@ -31,17 +33,19 @@ class $[pageName](BasePage):
     def initUi(self):
         pass
 ''',
-        handlePath=handlePath
-    ),
+)
 
-    CodeTemplate(
-        args=dict(
-            title='this is a example'
-        ),
-        path='',
-        content='''
-The title is 
-    $title
-'''
-    )
-]
+f2 = CodeFile(
+    path=f'$rootPath/pages/$[pageName]_page.py',
+    content='''
+import streamlit as st
+
+st.write('This is $[pageName] page')
+
+''',
+)
+
+template = CodeTemplate(
+    args=args,
+    files=[f1, f2],
+)
