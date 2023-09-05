@@ -10,6 +10,8 @@ class HomePage(BasePage):
         pass
 
     def initUi(self):
+        self.showTitle()
+
         self.features()
         self.reference()
 

@@ -4,6 +4,7 @@ from util_web import *
 
 
 class Template(BasePage):
+    CurrentTemplate: CodeTemplate = None
 
     def __init__(self):
         super().__init__()
@@ -13,33 +14,25 @@ class Template(BasePage):
         self.source = None
         self.c1 = None
         self.c0 = None
-        self.template = None
 
     def initData(self):
         self.templates = [x for x in os.listdir(TemplateFolder) if x.endswith('.py')]
         self.source = currentSourceFile()
-        self.template = currentTemplate()
 
         self.cmds = [
             ['edit', editCurrentTemplate],
-            ['add', self.add()],
-            ['reload', self.reload],
+            ['add', self.add],
             ['clone', self.clone],
             ['remove', self.remove],
         ]
 
     def initUi(self):
-        c = self.container
-        c.write('')
-
         with st.sidebar:
             st.button('Home', on_click=toHomePage)
 
             st.title(colorText('orange', 'Template list'))
 
-            c0, c1 = st.columns([2, 1])
-
-            selected = c0.radio(
+            selected = st.radio(
                 "",
                 self.templates,
                 label_visibility='collapsed'
@@ -49,18 +42,30 @@ class Template(BasePage):
                 setSessionState(TemplateKey, selected)
                 self.showTemplateFile()
 
+            if st.button(f'make {currentSourceFile()}', type='primary', use_container_width=True):
+                cs = st.columns(2)
+
+                cs[0].button('OK', type='primary', on_click=self.generate)
+
+                cs[1].button('Cancel', type='primary')
+
+            cs = st.columns(2)
             for n, (name, f) in enumerate(self.cmds):
-                if c1.button(name, type='primary'):
+                if cs[n % 2].button(name):
                     f()
 
         self.c0, self.c1 = st.columns([6, 4])
         self.showSource()
-        self.showTemplate()
+
+        t = Template.CurrentTemplate = currentTemplate()
+
+        if t is not None:
+            t.showTemplate(self.c0)
 
     def showTemplateFile(self):
         c = self.container
 
-        c.title(currentSourceFile())
+        c.subheader(f'{ss("Template").orange()}  {blank(1)}{currentSourceFile()}')
 
     @log
     def clone(self):
@@ -70,32 +75,16 @@ class Template(BasePage):
     def remove(self):
         pass
 
-    @log
-    def reload(self):
-        pass
-
     def showSource(self):
         c1 = self.c1
 
         c1.write(f'### {ss("Source").orange()}')
         c1.code(currentSource())
 
-    # @st.cache_data
-    def showTemplate(self):
-        t = currentTemplate()
-        print('ttt', t)
-        print('t.args', t.args)
-        print('t.files', t.files)
-        c0 = self.c0
-        c0.write('### ' + ss('args').orange())
-
-        if len(t.args.keys()) > 0:
-            cols = c0.columns(2)
-            for n, k in enumerate(t.args.keys()):
-                t.args[k] = cols[n % 2].text_input(ss(k).green().bold(), "" if t.args[k] is None else t.args[k])
-
-        for f in t.files:
-            t.showFile(f, c0)
-
     def add(self):
         pass
+
+    def generate(self):
+        print('generate generate generate')
+        t = Template.CurrentTemplate
+        t.generateCode()

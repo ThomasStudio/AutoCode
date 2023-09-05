@@ -10,7 +10,6 @@ def handlePath(path: str) -> str:
 args = dict(
     rootPath=None,
     pageName=None,
-    testName=None,
 )
 
 f1 = CodeFile(
@@ -37,6 +36,7 @@ class $[pageName](BasePage):
 
 f2 = CodeFile(
     path=f'$rootPath/pages/$[pageName]_page.py',
+    handlePath=handlePath,
     content='''
 import streamlit as st
 
