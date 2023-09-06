@@ -131,6 +131,15 @@ class CodeTemplate:
 
         writeFile(path, code)
 
+    def checkArgs(self) -> bool:
+        rs = True
+        for k in self.args:
+            if self.args[k] is None or len(self.args[k]) == 0:
+                st.error(f'{k} cannot be None')
+                rs = False
+
+        return rs
+
 
 def toShowTemplate():
     setSessionState(PageType, ShowTemplate)

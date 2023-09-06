@@ -43,11 +43,16 @@ class Template(BasePage):
                 self.showTemplateFile()
 
             if st.button(f'make {currentSourceFile()}', type='primary', use_container_width=True):
-                cs = st.columns(2)
+                t = Template.CurrentTemplate
+                if t is None:
+                    st.warning('No template selected')
+                else:
+                    if t.checkArgs():
+                        cs = st.columns(2)
 
-                cs[0].button('OK', type='primary', on_click=self.generate)
+                        cs[0].button('OK', type='primary', on_click=self.generate)
 
-                cs[1].button('Cancel', type='primary')
+                        cs[1].button('Cancel', type='primary')
 
             cs = st.columns(2)
             for n, (name, f) in enumerate(self.cmds):
