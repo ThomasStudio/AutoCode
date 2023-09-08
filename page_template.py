@@ -35,7 +35,8 @@ class Template(BasePage):
             selected = st.radio(
                 "",
                 self.templates,
-                label_visibility='collapsed'
+                label_visibility='collapsed',
+                format_func=lambda x: ss(x).green()
             )
 
             if len(selected) > 0:
@@ -70,7 +71,7 @@ class Template(BasePage):
     def showTemplateFile(self):
         c = self.container
 
-        c.subheader(f'{ss("Template").orange()}  {blank(1)}{currentSourceFile()}')
+        c.subheader(f'{ss("Template").orange()}  {blank(1)}{ss(currentSourceFile()).green()}')
 
     @log
     def clone(self):
