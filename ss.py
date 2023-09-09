@@ -60,8 +60,14 @@ class ss(str):
         return ss(f'**{self}**')
 
     def toPath(self):
-        return ss(self.replace('\\', os.sep).replace('/', os.sep))
+        rs = self
+        keys = ['\\', '/']
+        for k in keys:
+            if os.sep != k:
+                rs = rs.replace(k, os.sep)
+
+        return rs
 
 
 if __name__ == '__main__':
-    print(ss('hello222').red().title())
+        print(ss('hello222').red().title())
