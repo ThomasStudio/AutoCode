@@ -4,6 +4,7 @@ from ss import ss
 from util_template import writeFile
 from util_web import *
 
+
 class TemplateType(Enum):
     CREATE = 1  # create new file
     Modify = 2  # modify file
@@ -11,11 +12,12 @@ class TemplateType(Enum):
 
 
 class CodeFile:
-    def __init__(self, path: str = '', content: str = '', templateType=TemplateType.CREATE,
+    def __init__(self, path: str = '', content: str = '', templateType=TemplateType.SAMPLE, language='python',
                  handlePath: Callable[[str], str] = None, handleCode: Callable[[str], str] = None):
         self.path = path
         self.content = content
-        self.templateType = templateType
+        self.templateType: TemplateType = templateType
+        self.languate = language
         self.handlePath = handlePath
         self.handleCode = handleCode
 
@@ -50,20 +52,29 @@ class CodeTemplate:
     def showFile(self, f: CodeFile, container=None):
         c = st if container is None else container
 
-        c.write(f'#### {ss("path").orange()} {blank(3)} {ss(self.getPathPreview(f)).green()}')
+        if f.templateType in [TemplateType.CREATE, TemplateType.Modify]:
+            c.write(f'#### {ss(f.templateType.name.lower()).orange()} {blank(3)} {ss(self.getPathPreview(f)).green()}')
+        elif f.templateType in [TemplateType.SAMPLE]:
+            c.write(f'#### {ss("sample").orange()} {blank(3)}')
 
-        c.code(self.getCodePreview(f))
+        c.code(self.getCodePreview(f), language=f.languate)
 
     def generateCode(self):
         for f in self.files:
             print(f.path)
             self.generateFile(f)
 
-    def generateFile(self, f: CodeFile):
+    def generateFile(self, f: CodeFile) -> str:
+        if f.templateType not in [TemplateType.CREATE, TemplateType.Modify]:
+            print("This is a sample template")
+            return
+
         path = self.getPathPreview(f)
         code = self.getCodePreview(f)
 
         writeFile(path, code)
+
+        return
 
     def checkArgs(self) -> bool:
         rs = True

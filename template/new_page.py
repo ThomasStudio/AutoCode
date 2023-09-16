@@ -12,6 +12,7 @@ args = dict(
 
 f1 = CodeFile(
     path=f'$rootPath/page_$[pageName].py',
+    templateType=TemplateType.CREATE,
     handlePath=handlePath,
     content='''
 from base_page import BasePage

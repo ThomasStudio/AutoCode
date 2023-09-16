@@ -35,7 +35,7 @@ class Template(BasePage):
             st.title(colorText('orange', 'Template list'))
 
             selected = st.radio(
-                "",
+                "template list",
                 self.templates,
                 label_visibility='collapsed',
                 format_func=lambda x: ss(x).green()
