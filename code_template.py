@@ -1,8 +1,11 @@
-from enum import Enum
+import os.path
+from enum import Enum, auto
 from Cheetah.Template import Template
 from ss import ss
-from util_template import writeFile
+from util_template import writeFile, openFile
 from util_web import *
+import re
+from dataclasses import dataclass
 
 
 class TemplateType(Enum):
@@ -11,15 +14,32 @@ class TemplateType(Enum):
     SAMPLE = 3  # show some sample code
 
 
+class OperatorType(Enum):
+    InsertAfter = auto()
+    InsertBefore = auto()
+    Replace = auto()
+
+
+@dataclass
+class Operator:
+    patt: str = ''
+    code: str = ''
+    type: OperatorType = OperatorType.InsertAfter
+
+
 class CodeFile:
     def __init__(self, path: str = '', content: str = '', templateType=TemplateType.SAMPLE, language='python',
-                 handlePath: Callable[[str], str] = None, handleCode: Callable[[str], str] = None):
+                 operators: [Operator] = list(), handlePath: Callable[[str], str] = None,
+                 handleCode: Callable[[str], str] = None):
         self.path = path
         self.content = content
         self.templateType: TemplateType = templateType
         self.languate = language
+
         self.handlePath = handlePath
         self.handleCode = handleCode
+
+        self.operators: [Operator] = operators
 
 
 class CodeTemplate:
@@ -28,14 +48,23 @@ class CodeTemplate:
         self.files = files
 
     def getCodePreview(self, f: CodeFile) -> str:
-        rs = str(Template(source=f.content, namespaces=self.args))
+        if f.templateType in [TemplateType.CREATE, TemplateType.SAMPLE]:
+            rs = str(Template(source=f.content, namespaces=self.args))
+        else:
+            rs = self.getModifiedContent(f)
 
-        return rs if (f.handleCode is None) else f.handlePath(rs)
+        return rs if (f.handleCode is None) else f.handleCode(rs)
 
     def getPathPreview(self, f: CodeFile):
         rs = ss(Template(source=f.path, namespaces=self.args)).toPath()
 
         return rs if (f.handlePath is None) else f.handlePath(rs)
+
+    def getPatt(self, m: Operator):
+        return ss(Template(source=m.patt, namespaces=self.args))
+
+    def getCode(self, m: Operator):
+        return ss(Template(source=m.code, namespaces=self.args))
 
     def showTemplate(self, container=None):
         c = st if container is None else container
@@ -74,8 +103,6 @@ class CodeTemplate:
 
         writeFile(path, code)
 
-        return
-
     def checkArgs(self) -> bool:
         rs = True
         for k in self.args:
@@ -84,3 +111,36 @@ class CodeTemplate:
                 rs = False
 
         return rs
+
+    def getModifiedContent(self, f: CodeFile) -> str:
+
+        path = self.getPathPreview(f)
+
+        if not os.path.exists(path):
+            return f'File {path}\nnot exists'
+
+        content = openFile(path)
+        f.content = content
+
+        for op in f.operators:
+            patt, code, type = self.getPatt(op), self.getCode(op), op.type
+            print('type : ', type)
+
+            mt = re.findall(rf'''{patt}''', content)
+
+            if len(mt) == 0:
+                return content
+
+            mt = mt[0]
+            print('mt : ', mt)
+
+            if op.type is OperatorType.InsertBefore:
+                content = content.replace(mt, code + mt)
+            elif op.type is OperatorType.InsertAfter:
+                content = content.replace(mt, mt + code)
+            elif op.type is OperatorType.Replace:
+                content = content.replace(mt, code)
+
+        f.content = content
+
+        return content

@@ -1,9 +1,5 @@
 from code_template import *
 
-args = dict(
-    output=''
-)
-
 f1 = CodeFile(
     language='kotlin',
     content='''
@@ -17,8 +13,7 @@ fun main(args: Array<String>) {
 ''',
 )
 
-
 template = CodeTemplate(
-    args=args,
+    args=dict(output='hello world'),
     files=[f1],
 )
