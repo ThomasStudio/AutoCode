@@ -74,7 +74,7 @@ class CodeTemplate:
 
     def showArgs(self, container=None):
         c = st if container is None else container
-        colCount = 3
+        colCount = min(len(self.args.keys()), 3)
 
         if len(self.args.keys()) > 0:
             cols = c.columns(colCount)

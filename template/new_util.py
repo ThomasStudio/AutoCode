@@ -35,7 +35,6 @@ class $[pageName](BasePage):
 )
 
 f2 = CodeFile(
-    path=f'$rootPath/pages/$[pageName]_page.py',
     content='''
 import streamlit as st
 
