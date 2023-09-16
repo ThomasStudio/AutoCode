@@ -62,18 +62,20 @@ class Template(BasePage):
                 if cs[n % 2].button(name):
                     f()
 
-        self.c0, self.c1 = st.columns([6, 4])
-        self.showSource()
-
         t = Template.CurrentTemplate = currentTemplate()
 
         if t is not None:
+            t.showArgs()
+
+            self.c0, self.c1 = st.columns([6, 4])
+            self.showSource()
+
             t.showTemplate(self.c0)
 
     def showTemplateFile(self):
         c = self.container
 
-        c.subheader(f'{ss("Template").orange()}  {blank(1)}{ss(currentSourceFile()).green()}')
+        c.subheader(f'{ss("arguments").orange().bold()} {blank(1)} {ss(currentSourceFile()).green().bold()}')
 
     @log
     def clone(self):
@@ -86,7 +88,7 @@ class Template(BasePage):
     def showSource(self):
         c1 = self.c1
 
-        c1.write(f'### {ss("Source").orange()}')
+        c1.write(f'### {ss("template").orange()} {blank(1)} {ss(currentSourceFile()).green()}')
         c1.code(currentSource())
 
     def add(self):

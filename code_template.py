@@ -69,29 +69,33 @@ class CodeTemplate:
     def showTemplate(self, container=None):
         c = st if container is None else container
 
+        for f in self.files:
+            self.showFile(f, c)
+
+    def showArgs(self, container=None):
+        c = st if container is None else container
+        colCount = 3
+
         if len(self.args.keys()) > 0:
-            cols = c.columns(2)
+            cols = c.columns(colCount)
             for n, k in enumerate(self.args.keys()):
                 content = "" if self.args[k] is None else self.args[k]
                 showArea = '\n' in content
 
                 if showArea:
-                    self.args[k] = cols[n % 2].text_area(ss(k).orange(), content)
+                    self.args[k] = cols[n % colCount].text_area(ss(k).orange(), content)
                 else:
-                    if cols[n % 2].checkbox(ss(f'↕ {blank(1)} {k}').orange().bold(),
-                                            value=showArea):
-                        self.args[k] = cols[n % 2].text_area(k, content, label_visibility='collapsed', height=38)
+                    if cols[n % colCount].checkbox(ss(f'↕ {blank(1)} {k}').orange().bold(), value=showArea):
+                        self.args[k] = cols[n % colCount].text_area(k, content, label_visibility='collapsed', height=38)
                     else:
-                        self.args[k] = cols[n % 2].text_input(k, content, label_visibility='collapsed')
-
-        for f in self.files:
-            self.showFile(f, c)
+                        self.args[k] = cols[n % colCount].text_input(k, content, label_visibility='collapsed')
 
     def showFile(self, f: CodeFile, container=None):
         c = st if container is None else container
 
         if f.templateType in [TemplateType.CREATE, TemplateType.Modify]:
-            c.write(f'#### {ss(f.templateType.name.lower()).orange()} {blank(3)} {ss(self.getPathPreview(f)).green()}')
+            c.write(
+                f'#### {ss(f.templateType.name.lower() + " result").orange()}  {blank(1)} {ss(self.getPathPreview(f)).green()}')
         elif f.templateType in [TemplateType.SAMPLE]:
             c.write(f'#### {ss("sample").orange()} {blank(3)}')
 
