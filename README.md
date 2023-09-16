@@ -2,5 +2,5 @@
 generate code by template
 
 # run
-source venv/scripts/activate
-start
+1. source venv/scripts/activate
+2. start
