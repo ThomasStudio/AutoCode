@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from util_template import *
+from code_template import CodeFile, CodeTemplate
 
 
 def handlePath(path: str) -> str:

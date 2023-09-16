@@ -1,6 +1,8 @@
+from code_template import CodeTemplate
 from page_base import BasePage
 from util_template import *
 from util_web import *
+from ss import ss
 
 
 class Template(BasePage):
