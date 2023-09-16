@@ -26,6 +26,8 @@ class HomePage(BasePage):
             ###### Documentation {blank(4)} https://docs.streamlit.io
             ###### Git  {blank(4)} https://github.com/streamlit/streamlit
             ###### extras {blank(4)} https://extras.streamlit.app/
+            ###### emoji {blank(4)} https://streamlit-emoji-shortcodes-streamlit-app-gwckff.streamlit.app/
+            ###### import emoji: {blank(4)} from rich._emoji_codes import EMOJI
         """
         )
 

@@ -2,6 +2,12 @@ from code_template import *
 
 args = dict(
     filePath='template\modfy_sample.py',
+    newFunBefore='''def testInsertBefore():
+    print("testInsertBefore")\n\n\n''',
+    newFunAfter='''\n\n\ndef testInsertAfter():
+    print("testInsertAfter")\n''',
+    newFunReplace='''def testReplace():
+    print("testReplace")''',
 )
 
 f1 = CodeFile(
@@ -10,22 +16,19 @@ f1 = CodeFile(
     operators=[
         Operator(
             patt='''(def\s*?testFun[\s\S]*?fun'\))''',
-            code='''def testInsertBefore():
-    print("testInsertBefore")\n\n\n''',
+            code='''$newFunBefore''',
             type=OperatorType.InsertBefore
         ),
 
         Operator(
             patt='''(def\s*?testFun[\s\S]*?fun'\))''',
-            code='''\n\n\ndef testInsertAfter():
-    print("testInsertAfter")\n''',
+            code='''$newFunAfter''',
             type=OperatorType.InsertAfter
         ),
 
         Operator(
             patt='''(def\s*?testFun[\s\S]*?fun'\))''',
-            code='''def testReplace():
-    print("testReplace")''',
+            code='''$newFunReplace''',
             type=OperatorType.Replace
         )
 

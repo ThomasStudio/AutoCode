@@ -72,8 +72,17 @@ class CodeTemplate:
         if len(self.args.keys()) > 0:
             cols = c.columns(2)
             for n, k in enumerate(self.args.keys()):
-                self.args[k] = cols[n % 2].text_input(ss(k).orange().bold(),
-                                                      "" if self.args[k] is None else self.args[k])
+                content = "" if self.args[k] is None else self.args[k]
+                showArea = '\n' in content
+
+                if showArea:
+                    self.args[k] = (cols[n % 2].text_area(ss(k).orange(), content))
+                else:
+                    if cols[n % 2].checkbox(ss(f'↕ {blank(3)} {k}').orange().bold(),
+                                            value=showArea):
+                        self.args[k] = (cols[n % 2].text_area(k, content, label_visibility='collapsed'))
+                    else:
+                        self.args[k] = (cols[n % 2].text_input(k, content, label_visibility='collapsed'))
 
         for f in self.files:
             self.showFile(f, c)

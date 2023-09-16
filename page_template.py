@@ -23,9 +23,9 @@ class Template(BasePage):
 
         self.cmds = [
             ['edit', editCurrentTemplate],
-            ['add', self.add],
-            ['clone', self.clone],
-            ['remove', self.remove],
+            # ['add', self.add],
+            # ['clone', self.clone],
+            # ['remove', self.remove],
         ]
 
     def initUi(self):
